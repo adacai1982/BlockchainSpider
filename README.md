@@ -86,6 +86,11 @@ You can find the label data on `./data/labels.ofac`, each row of this file is a 
 
 **Note**: Please indicate the source when using crawling labels.
 
+### 💡Collect exchange address
+```shell	
+scrapy crawl labels.labelcloud.exchange -a site=etherscan
+```
+
 ### 🧱Collect block data
 
 In this section, we will demonstrate how to collect block data in [Ethereum](https://ethereum.org/)!
