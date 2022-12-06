@@ -10,8 +10,11 @@ from BlockchainSpider import settings
 from BlockchainSpider.items import LabelAddressItem, LabelTransactionItem, LabelReportItem
 
 
-class LabelsCloudSpider(scrapy.Spider):
-    name = 'labels.labelcloud'
+class LabelsCloudSpiderExchange(scrapy.Spider):
+    exchangeList = ['Bitfinex', 'Bitstamp' , 'Bittrex', 'Binance', 'Coinbase', 'Coinone', 'CoinMetro', 'Coinhako', 
+    'Coinsquare', 'Crypto.com', 'Deribit', 'Gate.io', 'Gemini', 'Hotbit', 'Huobi', 'Korbit', 'Kraken', 'KuCoin', 
+    'OKX', 'Poloniex', 'Paribu', 'Tornado.Cash', 'Upbit','Exchange']
+    name = 'labels.labelcloud.exchange'
     custom_settings = {
         'DOWNLOADER_MIDDLEWARES': {
             'BlockchainSpider.middlewares.SeleniumMiddleware': 900,
@@ -35,15 +38,15 @@ class LabelsCloudSpider(scrapy.Spider):
             'polygonscan': 'polygon',
             'snowtrace': 'avax', 
             'optimisticscan': 'optimistic',
-            'arbiscan':'arbitrum'
+            'arbiscan': 'arbitrum'
         }
         self._allow_site = {
             'etherscan': 'https://etherscan.io',
             'bscscan': 'https://bscscan.com',
             'polygonscan': 'https://polygonscan.com',
             'snowtrace': 'https://snowtrace.io',
-            'optimisticscan':'https://optimistic.etherscan.io',
-            'arbiscan':'https://arbiscan.io'
+            'optimisticscan': 'https://optimistic.etherscan.io',
+            'arbiscan': 'https://arbiscan.io'
         }
         assert self.site in self._allow_site.keys()
 
@@ -60,6 +63,8 @@ class LabelsCloudSpider(scrapy.Spider):
 
     def start_requests(self):
         # open selenium to login in
+        
+        print (self.url_site + '/login')
         self.driver.get(self.url_site + '/login')
         WebDriverWait(
             driver=self.driver,
@@ -87,7 +92,6 @@ class LabelsCloudSpider(scrapy.Spider):
             category = _get_categories(category, self.label_categories)
             if not category:
                 continue
-
             href = a.xpath('@href').get()
             size = a.xpath('text()').get()
             size = re.sub('<.*?>', '', size)
@@ -109,6 +113,11 @@ class LabelsCloudSpider(scrapy.Spider):
 
     def parse_label_navigation(self, response, **kwargs):
         label = response.xpath('//h1/span/text()').get()
+        
+        print (label)
+        if not label in self.exchangeList:
+            return
+            
         base_url = urljoin(
             base='%s://%s' % (urlsplit(response.url).scheme, urlsplit(response.url).netloc),
             url=urlsplit(response.url).path,
@@ -168,6 +177,7 @@ class LabelsCloudSpider(scrapy.Spider):
             level=logging.INFO
         )
         label = kwargs.get('label')
+
 
         info_headers = list()
         for header in response.xpath('//thead/tr/th').extract():
