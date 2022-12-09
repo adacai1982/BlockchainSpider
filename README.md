@@ -90,6 +90,10 @@ You can find the label data on `./data/labels.ofac`, each row of this file is a 
 ```shell	
 scrapy crawl labels.labelcloud.exchange -a site=etherscan
 ```
+### 💡Collect null address
+```shell	
+scrapy crawl labels.labelcloud.null -a site=etherscan
+```
 
 ### 🧱Collect block data
 
