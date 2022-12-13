@@ -79,97 +79,25 @@ class LabelsCloudSpiderExchange(scrapy.Spider):
             callback=self.parse_label_cloud,
         )
 
-    def parse_label_cloud(self, response, **kwargs):
-        def _get_categories(category: str, categories: list) -> str:
-            for _c in categories:
-                if category.lower().find(_c) >= 0:
-                    return _c
-
-        root_url = '%s://%s' % (urlsplit(response.url).scheme, urlsplit(response.url).netloc)
-        for a in response.xpath('//div[contains(@class,"dropdown-menu")]//a'):
-            category = a.extract()
-            category = re.sub('<.*?>', '', category)
-            category = _get_categories(category, self.label_categories)
-            if not category:
-                continue
-            href = a.xpath('@href').get()
-            size = a.xpath('text()').get()
-            size = re.sub('<.*?>', '', size)
-            size = re.search(r'\d+', size).group() if re.search(r'\d+', size) else self.page_size
-
+    def parse_label_cloud(self, response, **kwargs): 
+        for a in self.exchangeList:
+              
             request = scrapy.Request(
-                url=urljoin(root_url, href),
+                url=self.url_site + '/accounts/label/' + a + '?subcatid=1&size=1000&start=0&col=1&order=asc',
                 method='GET',
                 cookies=response.request.cookies,
-                callback=self.parse_label_navigation,
-                cb_kwargs=dict(size=size, category=category)
+                callback=self.parse_labels,
+                cb_kwargs=dict(label=a, category='Account')
             )
+
             if self.label_names is None:
                 yield request
             else:
                 for label_name in self.label_names:
                     if href.find(label_name) >= 0:
                         yield request
+ 
 
-    def parse_label_navigation(self, response, **kwargs):
-        label = response.xpath('//h1/span/text()').get()
-        
-        print (label)
-        if not label in self.exchangeList:
-            return
-            
-        base_url = urljoin(
-            base='%s://%s' % (urlsplit(response.url).scheme, urlsplit(response.url).netloc),
-            url=urlsplit(response.url).path,
-        )
-
-        tab_anchors = response.xpath('//div[contains(@class,"card-header")]/ul/li/a')
-        if len(tab_anchors) > 0:
-            for tab in tab_anchors:
-                total = tab.xpath('text()').get()
-                total = int(re.search(r'\d+', total).group()) if re.search(r'\d+', total) else self.page_size
-                start = 0
-                subcatid = tab.attrib.get('val', 0)
-
-                while start < total:
-                    _url = '?'.join([
-                        base_url,
-                        urlencode({
-                            'subcatid': subcatid,
-                            'size': self.page_size,
-                            'start': start,
-                        })
-                    ])
-                    yield scrapy.Request(
-                        url=_url,
-                        method='GET',
-                        cookies=response.request.cookies,
-                        callback=self.parse_labels,
-                        dont_filter=True,
-                        cb_kwargs=dict(label=label, category=kwargs.get('category')),
-                    )
-                    start += self.page_size
-        else:
-            total = int(kwargs.get('size', self.page_size))
-            start = 0
-
-            while start < total:
-                _url = '?'.join([
-                    base_url,
-                    urlencode({
-                        'size': self.page_size,
-                        'start': start,
-                    })
-                ])
-                yield scrapy.Request(
-                    url=_url,
-                    method='GET',
-                    cookies=response.request.cookies,
-                    callback=self.parse_labels,
-                    dont_filter=True,
-                    cb_kwargs=dict(label=label, category=kwargs.get('category')),
-                )
-                start += self.page_size
 
     def parse_labels(self, response, **kwargs):
         self.log(

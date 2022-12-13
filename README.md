@@ -94,6 +94,10 @@ scrapy crawl labels.labelcloud.exchange -a site=etherscan
 ```shell	
 scrapy crawl labels.labelcloud.null -a site=etherscan
 ```
+### 💡Collect dex address
+```shell	
+scrapy crawl labels.labelcloud.dex -a site=etherscan
+```
 
 ### 🧱Collect block data
 
