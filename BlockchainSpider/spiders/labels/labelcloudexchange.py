@@ -12,8 +12,8 @@ from BlockchainSpider.items import LabelAddressItem, LabelTransactionItem, Label
 
 class LabelsCloudSpiderExchange(scrapy.Spider):
     exchangeList = ['Bitfinex', 'Bitstamp' , 'Bittrex', 'Binance', 'Coinbase', 'Coinone', 'CoinMetro', 'Coinhako', 
-    'Coinsquare', 'Crypto.com', 'Deribit', 'Gate.io', 'Gemini', 'Hotbit', 'Huobi', 'Korbit', 'Kraken', 'KuCoin', 
-    'OKX', 'Poloniex', 'Paribu', 'Tornado.Cash', 'Upbit','Exchange', 'MaskEX']
+    'Coinsquare', 'Crypto-com', 'Deribit', 'Gate-io', 'Gemini', 'Hotbit', 'Huobi', 'Korbit', 'Kraken', 'KuCoin', 
+    'OKX', 'Poloniex', 'Paribu', 'Tornado-Cash', 'Upbit','Exchange', 'MaskEX']
     name = 'labels.labelcloud.exchange'
     custom_settings = {
         'DOWNLOADER_MIDDLEWARES': {
