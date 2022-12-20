@@ -36,7 +36,8 @@ class LabelsCloudSpiderNull(scrapy.Spider):
             'polygonscan': 'polygon',
             'snowtrace': 'avax', 
             'optimisticscan': 'optimistic',
-            'arbiscan': 'arbitrum'
+            'arbiscan': 'arbitrum',
+            'ftmscan':'fantom'
         }
         self._allow_site = {
             'etherscan': 'https://etherscan.io',
@@ -44,7 +45,8 @@ class LabelsCloudSpiderNull(scrapy.Spider):
             'polygonscan': 'https://polygonscan.com',
             'snowtrace': 'https://snowtrace.io',
             'optimisticscan': 'https://optimistic.etherscan.io',
-            'arbiscan': 'https://arbiscan.io'
+            'arbiscan': 'https://arbiscan.io',
+            'ftmscan': 'https://ftmscan.com/'
         }
         assert self.site in self._allow_site.keys()
 

@@ -1,5 +1,5 @@
-$networks = 'eth', 'avax', 'pol', 'bsc', 'arb', 'opt'
-$urls = 'etherscan', 'snowtrace', 'polygonscan', 'bscscan',  'arbiscan', 'optimisticscan'
+$networks = 'eth', 'avax', 'pol', 'bsc', 'arb', 'opt','ftm'
+$urls = 'etherscan', 'snowtrace', 'polygonscan', 'bscscan',  'arbiscan', 'optimisticscan','ftmscan'
 $commands = 'labels.labelcloud.exchange', 'labels.labelcloud.dex', 'labels.labelcloud.null'
 for ($counter=0; $counter -lt $networks.Length; $counter++) {
     $network = $networks[$counter]
